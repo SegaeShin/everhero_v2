@@ -58,3 +58,27 @@ export interface BenchmarkData {
   kospiReturnRate: number;
   depositRate: number;
 }
+
+export interface RuleScoreDetail {
+  key:
+    | "riskScore"
+    | "feeScore"
+    | "returnScore"
+    | "diversificationScore"
+    | "ageAlignmentScore";
+  label: string;
+  score: number;
+  message: string;
+}
+
+export interface DiagnosisResult {
+  overallScore: number;
+  riskScore: number;
+  feeScore: number;
+  returnScore: number;
+  diversificationScore: number;
+  ageAlignmentScore: number;
+  aiComment: string;
+  recommendations: string[];
+  ruleDetails: RuleScoreDetail[];
+}
