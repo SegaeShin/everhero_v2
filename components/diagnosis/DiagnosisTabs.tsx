@@ -31,7 +31,7 @@ export function DiagnosisTabs({ activeTab }: DiagnosisTabsProps) {
   };
 
   return (
-    <div className="inline-flex rounded-2xl border border-slate-200 bg-slate-50 p-1">
+    <div className="inline-flex rounded-2xl border border-slate-200 bg-slate-50 p-1 shadow-sm">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.value;
 
@@ -40,9 +40,9 @@ export function DiagnosisTabs({ activeTab }: DiagnosisTabsProps) {
             key={tab.value}
             type="button"
             onClick={() => handleTabChange(tab.value)}
-            className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
+            className={`min-w-[120px] rounded-xl px-5 py-2.5 text-sm font-medium transition ${
               isActive
-                ? "bg-white text-slate-900 shadow-sm"
+                ? "bg-white text-slate-900 shadow-sm ring-1 ring-slate-200"
                 : "text-slate-500 hover:text-slate-700"
             }`}
           >
