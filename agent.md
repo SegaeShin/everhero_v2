@@ -1,40 +1,71 @@
 # agent.md
 
-## Project definition
+## 프로젝트 정의
 
-EverHero is a DC retirement pension management platform demo. The primary target user is a retirement pension operator at a company of roughly 500 employees. The product should help that user understand company-wide status, identify which employees need attention first, review explainable diagnosis results, and prepare reporting or consultation support materials.
+EverHero는 DC형 퇴직연금 관리 플랫폼 데모입니다.
 
-## Implemented routes
+핵심 사용자는 약 500명 규모 회사의 퇴직연금 운영 담당자이며, 이 사용자는 금융상품 전문가라기보다 인사, 재무, 총무 실무 담당자에 가까울 가능성이 높습니다. 따라서 제품은 투자 조언 도구처럼 보이기보다 운영 관리 도구처럼 작동해야 합니다.
 
-- `/` dashboard
-- `/employees` employee management
-- `/employees/[id]` employee detail
-- `/diagnosis` diagnosis
-- `/compliance` compliance demo
-- `/simulation` retirement simulator
+사용자가 이 서비스에서 빠르게 하고 싶은 일은 아래와 같습니다.
 
-## Product direction
+- 전사 현황 파악
+- 우선 관리 대상 직원 선별
+- 왜 문제가 되는지 근거 확인
+- 내부 보고 또는 직원 안내 준비
 
-- keep the interface product-like and operational, not like an internal prototype
-- prioritize practical workflows over decorative complexity
-- show why a score or risk flag was produced, not only the result
-- design for Korean-language pension operations and reporting contexts
+## 현재 구현된 화면
 
-## UX priorities
+- `/` 대시보드
+- `/employees` 직원 관리
+- `/employees/[id]` 직원 상세
+- `/diagnosis` 진단
+- `/compliance` 컴플라이언스 데모
+- `/simulation` 은퇴 시뮬레이터
 
-1. Let the operator grasp company-wide status quickly.
-2. Help them find the employees that need follow-up first.
-3. Make the reason for concern easy to understand and explain.
-4. Support internal reporting and employee-facing guidance.
+## 현재 제품 방향
 
-## Data principles
+- 내부 프로토타입 느낌보다 실제 서비스처럼 보이게 유지
+- 장식보다 운영 효율과 가독성을 우선
+- 점수만 보여주지 않고 이유와 설명을 같이 제공
+- 한국어 기반 실무 UX 유지
+- 투자 자문 서비스처럼 과장하지 않기
 
-- app data access should go through `lib/data.ts`
-- Supabase is the primary source when configured
-- mock data remains as a fallback for development and demos
-- avoid wiring UI components directly to `lib/mock-data.ts` unless there is a clear reason
+## 현재 구현 기준 주요 메모
 
-## Supabase-related files
+### 1. 데이터 기준
+
+앱의 데이터 접근은 가능하면 `lib/data.ts`를 통해 처리합니다.
+
+우선순위:
+
+1. Supabase
+2. mock data fallback
+
+직접 `lib/mock-data.ts`를 화면에서 바로 소비하는 방식은 줄이고, 가능하면 조회 계층을 통일합니다.
+
+### 2. 대시보드 수치
+
+현재 대시보드와 상단 헤더의 임직원 수 표시는 실제 `employees` 데이터 기준으로 맞춰져 있어야 합니다.
+
+- 총 직원 수: `employees.length`
+- 총 적립금: 직원 `balance` 합계
+- 평균 수익률: 직원 `returnRate` 평균
+- 관리 필요 대상: 위험 플래그 보유 직원 수
+- 상단 임직원 수 배지: `employees.length`
+
+### 3. 직원 검색 UX
+
+직원 검색 입력창은 한글 IME 입력 중 조합이 깨지지 않도록 composition handling이 반영되어 있습니다. 검색 입력 변경 시 즉시 라우팅하지 않고 조합 완료 후 반영하는 구조를 유지합니다.
+
+### 4. UI 방향
+
+- 좌측 사이드바는 제품형 구조 유지
+- 과거 기획용 라벨인 `MVP Core`, `MVP Light`는 UI에서 제거
+- 현재 보고 있는 메뉴는 너무 세지 않게, 하지만 구분 가능하게 표시
+- 긴 페이지에서도 사이드바 배경이 중간에 끊기지 않도록 유지
+- 회사명은 현재 `경기도경제과학진흥원` 기준
+
+## Supabase 관련 파일
 
 - `lib/supabase.ts`
 - `lib/data.ts`
@@ -42,22 +73,30 @@ EverHero is a DC retirement pension management platform demo. The primary target
 - `supabase/seed.sql`
 - `scripts/generate-supabase-seed.mjs`
 
-## Development rules
+## 개발 원칙
 
-- prefer readable implementation over premature abstraction
-- preserve TypeScript safety
-- keep UI copy in Korean where it is user-facing
-- avoid overstating unimplemented AI capabilities
-- treat the service as an operations tool first, not an investment advisory tool
+- 실무형 MVP 우선
+- 읽기 쉬운 구현 우선
+- TypeScript 안전성 유지
+- 사용자에게 보이는 문구는 한국어 중심 유지
+- 구현되지 않은 기능을 구현된 것처럼 문서화하지 않기
+- 민감한 키와 비밀번호는 저장소에 넣지 않기
 
-## Build and deployment notes
+## 빌드 및 배포 주의사항
 
-- local dev output: `.next`
-- local build output: `.next-build`
-- Vercel deployment uses the default `.next`
+이 프로젝트는 과거에 `next dev`와 `next build`가 같은 출력 디렉터리를 사용해서 문제가 발생한 적이 있습니다. 현재는 아래 원칙을 유지합니다.
 
-Keep the current build separation intact to avoid repeating the previous Next.js output collision issue.
+- local dev: `.next`
+- local build/start: `.next-build`
+- Vercel deployment: `.next`
 
-## Documentation rule
+이 분리를 깨지 않도록 유지해야 합니다.
 
-Keep repository documentation aligned with the actual implemented state. Remove outdated planning labels from docs when the UI no longer uses them, and never commit secrets into repository-tracked files.
+## 문서 업데이트 원칙
+
+README.md와 agent.md는 항상 실제 코드와 화면 기준으로 갱신합니다.
+
+- 현재 구현된 기능만 적기
+- 제거된 표현은 문서에서도 제거하기
+- Supabase 연동 상태를 최신 기준으로 반영하기
+- 사용자를 “500명 규모 회사의 퇴직연금 담당자”로 계속 상정하기
