@@ -1,7 +1,7 @@
 import type { CompanyProfile, Employee, ProductCatalogItem, RiskFlag } from "@/types";
 
 export const companyProfile: CompanyProfile = {
-  name: "판교테크 주식회사",
+  name: "경기도경제과학진흥원",
   industry: "IT",
   employeeCount: 247,
   pensionType: "DC형",

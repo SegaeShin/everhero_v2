@@ -1,8 +1,8 @@
 import Link from "next/link";
 import type { Route } from "next";
 
-import { employees, riskFlagLabels } from "@/lib/mock-data";
-import type { RiskFlag } from "@/types";
+import { riskFlagLabels } from "@/lib/mock-data";
+import type { Employee, RiskFlag } from "@/types";
 
 const riskAlertStyles: Record<RiskFlag, { tone: string; dot: string; helper: string }> = {
   risk_asset_over: {
@@ -40,15 +40,15 @@ const riskAlertOrder: RiskFlag[] = [
   "no_diversification"
 ];
 
-const riskAlertSummary = riskAlertOrder
-  .map((flag) => ({
-    flag,
-    label: riskFlagLabels[flag],
-    count: employees.filter((employee) => employee.riskFlags.includes(flag)).length
-  }))
-  .filter((item) => item.count > 0);
+export function RiskAlertList({ employees }: { employees: Employee[] }) {
+  const riskAlertSummary = riskAlertOrder
+    .map((flag) => ({
+      flag,
+      label: riskFlagLabels[flag],
+      count: employees.filter((employee) => employee.riskFlags.includes(flag)).length
+    }))
+    .filter((item) => item.count > 0);
 
-export function RiskAlertList() {
   return (
     <section className="card">
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">

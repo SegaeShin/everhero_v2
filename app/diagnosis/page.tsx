@@ -4,8 +4,8 @@ import { DiagnosisTabs } from "@/components/diagnosis/DiagnosisTabs";
 import { EmployeeSelector } from "@/components/diagnosis/EmployeeSelector";
 import { RuleResults } from "@/components/diagnosis/RuleResults";
 import { ScoreCard } from "@/components/diagnosis/ScoreCard";
+import { getEmployees } from "@/lib/data";
 import { diagnoseEmployee } from "@/lib/diagnosis-rules";
-import { employees } from "@/lib/mock-data";
 import { formatAmount } from "@/lib/format";
 
 interface DiagnosisPageProps {
@@ -15,7 +15,8 @@ interface DiagnosisPageProps {
   };
 }
 
-export default function DiagnosisPage({ searchParams }: DiagnosisPageProps) {
+export default async function DiagnosisPage({ searchParams }: DiagnosisPageProps) {
+  const employees = await getEmployees();
   const activeTab = searchParams?.tab === "company" ? "company" : "personal";
   const selectedEmployee =
     employees.find((employee) => employee.id === searchParams?.employeeId) ?? employees[0];
@@ -93,7 +94,7 @@ export default function DiagnosisPage({ searchParams }: DiagnosisPageProps) {
           <AIComment content={diagnosis.aiComment} />
         </>
       ) : (
-        <CompanyDiagnosisPanel />
+        <CompanyDiagnosisPanel employees={employees} />
       )}
     </div>
   );

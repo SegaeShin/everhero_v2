@@ -1,0 +1,272 @@
+-- Generated from lib/mock-data.ts
+-- Run this after supabase/schema.sql
+
+begin;
+
+truncate table employee_portfolios restart identity cascade;
+truncate table employee_risk_flags restart identity cascade;
+truncate table employees restart identity cascade;
+truncate table company_profiles restart identity cascade;
+
+insert into company_profiles (name, industry, employee_count, pension_type, provider, is_active)
+values ('경기도경제과학진흥원', 'IT', 247, 'DC형', 'KB국민은행', true);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-001', '김민수', '개발', '2018-03-05', 1990, 82000000, 680000, 12.3);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-001', '미래에셋글로벌주식펀드', 'equity', 40, 11.2, 0.8, 4);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-001', '미래에셋전략배분TDF2045', 'tdf', 30, 7.3, 0.45, 3);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-001', '삼성채권안정펀드', 'bond', 30, 3.8, 0.25, 2);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-002', '박지영', '영업', '2016-09-12', 1985, 31000000, 510000, 1.2);
+
+insert into employee_risk_flags (employee_id, flag)
+values ('emp-002', 'low_return');
+
+insert into employee_risk_flags (employee_id, flag)
+values ('emp-002', 'no_diversification');
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-002', '삼성생명 원리금보장보험', 'deposit', 100, 3.2, 0.1, 1);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-003', '이준호', '마케팅', '2020-01-20', 1992, 56000000, 570000, 8.1);
+
+insert into employee_risk_flags (employee_id, flag)
+values ('emp-003', 'risk_asset_over');
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-003', '미래에셋글로벌주식펀드', 'equity', 45, 11.2, 0.8, 4);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-003', 'KB한국성장주펀드', 'equity', 40, 9.5, 0.65, 4);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-003', 'KB국민은행 정기예금', 'deposit', 15, 3.5, 0, 1);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-004', '정수진', '재무', '2017-07-03', 1988, 68000000, 620000, 3.5);
+
+insert into employee_risk_flags (employee_id, flag)
+values ('emp-004', 'high_fee');
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-004', '신한고수수료글로벌펀드', 'equity', 80, 8, 1.3, 4);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-004', '삼성채권안정펀드', 'bond', 20, 3.8, 0.25, 2);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-005', '최영미', '인사', '2014-04-01', 1967, 180000000, 900000, 7.2);
+
+insert into employee_risk_flags (employee_id, flag)
+values ('emp-005', 'age_mismatch');
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-005', '미래에셋글로벌주식펀드', 'equity', 35, 11.2, 0.8, 4);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-005', '한국밸류EMP혼합', 'mixed', 25, 6.1, 0.55, 3);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-005', '삼성채권안정펀드', 'bond', 20, 3.8, 0.25, 2);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-005', 'KB국민은행 정기예금', 'deposit', 20, 3.5, 0, 1);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-006', '한동우', '개발', '2024-01-08', 2000, 4500000, 280000, 4.8);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-006', '미래에셋전략배분TDF2045', 'tdf', 100, 7.3, 0.45, 3);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-007', '오세린', '개발', '2019-06-10', 1995, 49000000, 540000, 6.4);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-007', 'KB한국성장주펀드', 'equity', 35, 9.5, 0.65, 4);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-007', 'NH올시즌EMP', 'mixed', 25, 5.5, 0.5, 3);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-007', '삼성채권안정펀드', 'bond', 20, 3.8, 0.25, 2);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-007', 'KB국민은행 정기예금', 'deposit', 20, 3.5, 0, 1);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-008', '윤태호', '영업', '2015-11-02', 1983, 73000000, 700000, 2.8);
+
+insert into employee_risk_flags (employee_id, flag)
+values ('emp-008', 'low_return');
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-008', 'KB국민은행 정기예금', 'deposit', 70, 3.5, 0, 1);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-008', '삼성채권안정펀드', 'bond', 30, 3.8, 0.25, 2);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-009', '송하늘', '디자인', '2021-08-17', 1994, 27000000, 430000, 5.9);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-009', '미래에셋전략배분TDF2045', 'tdf', 50, 7.3, 0.45, 3);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-009', 'KB한국성장주펀드', 'equity', 20, 9.5, 0.65, 4);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-009', '삼성채권안정펀드', 'bond', 30, 3.8, 0.25, 2);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-010', '강도윤', '운영', '2013-02-14', 1979, 95000000, 760000, 4.1);
+
+insert into employee_risk_flags (employee_id, flag)
+values ('emp-010', 'age_mismatch');
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-010', 'KB한국성장주펀드', 'equity', 45, 9.5, 0.65, 4);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-010', 'NH올시즌EMP', 'mixed', 25, 5.5, 0.5, 3);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-010', 'KB국민은행 정기예금', 'deposit', 30, 3.5, 0, 1);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-011', '배수현', '고객성공', '2022-03-21', 1996, 18000000, 390000, 6.7);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-011', '미래에셋전략배분TDF2045', 'tdf', 60, 7.3, 0.45, 3);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-011', '삼성채권안정펀드', 'bond', 20, 3.8, 0.25, 2);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-011', 'KB국민은행 정기예금', 'deposit', 20, 3.5, 0, 1);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-012', '서민재', '개발', '2012-05-07', 1987, 112000000, 820000, 9.4);
+
+insert into employee_risk_flags (employee_id, flag)
+values ('emp-012', 'risk_asset_over');
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-012', '미래에셋글로벌주식펀드', 'equity', 50, 11.2, 0.8, 4);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-012', 'KB한국성장주펀드', 'equity', 30, 9.5, 0.65, 4);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-012', '삼성채권안정펀드', 'bond', 20, 3.8, 0.25, 2);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-013', '문지후', '재무', '2020-10-05', 1991, 41000000, 470000, 5.1);
+
+insert into employee_risk_flags (employee_id, flag)
+values ('emp-013', 'high_fee');
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-013', '신한고수수료글로벌펀드', 'equity', 40, 8, 1.3, 4);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-013', 'NH올시즌EMP', 'mixed', 30, 5.5, 0.5, 3);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-013', 'KB국민은행 정기예금', 'deposit', 30, 3.5, 0, 1);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-014', '장예린', '인사', '2023-04-03', 1998, 12000000, 340000, 3.9);
+
+insert into employee_risk_flags (employee_id, flag)
+values ('emp-014', 'no_diversification');
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-014', 'KB온국민TDF2035', 'tdf', 100, 5.8, 0.4, 2);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-015', '류현석', '영업', '2011-12-26', 1981, 126000000, 850000, 6.2);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-015', '한국밸류EMP혼합', 'mixed', 35, 6.1, 0.55, 3);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-015', '삼성채권안정펀드', 'bond', 35, 3.8, 0.25, 2);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-015', 'KB국민은행 정기예금', 'deposit', 30, 3.5, 0, 1);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-016', '임가은', '마케팅', '2018-08-27', 1993, 58000000, 560000, 7.8);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-016', '미래에셋글로벌주식펀드', 'equity', 30, 11.2, 0.8, 4);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-016', '미래에셋전략배분TDF2045', 'tdf', 40, 7.3, 0.45, 3);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-016', '삼성채권안정펀드', 'bond', 30, 3.8, 0.25, 2);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-017', '조은호', '운영', '2010-06-01', 1976, 138000000, 880000, 2.4);
+
+insert into employee_risk_flags (employee_id, flag)
+values ('emp-017', 'low_return');
+
+insert into employee_risk_flags (employee_id, flag)
+values ('emp-017', 'no_diversification');
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-017', 'KB국민은행 정기예금', 'deposit', 90, 3.5, 0, 1);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-017', '삼성생명 원리금보장보험', 'deposit', 10, 3.2, 0.1, 1);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-018', '신예은', '디자인', '2024-02-19', 1999, 7000000, 290000, 5.4);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-018', '미래에셋전략배분TDF2045', 'tdf', 70, 7.3, 0.45, 3);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-018', 'KB국민은행 정기예금', 'deposit', 30, 3.5, 0, 1);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-019', '백도현', '고객성공', '2019-01-14', 1989, 52000000, 530000, 6);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-019', 'NH올시즌EMP', 'mixed', 40, 5.5, 0.5, 3);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-019', '삼성채권안정펀드', 'bond', 30, 3.8, 0.25, 2);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-019', 'KB국민은행 정기예금', 'deposit', 30, 3.5, 0, 1);
+
+insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)
+values ('emp-020', '허나경', '전략기획', '2017-11-13', 1986, 64000000, 610000, 4.6);
+
+insert into employee_risk_flags (employee_id, flag)
+values ('emp-020', 'high_fee');
+
+insert into employee_risk_flags (employee_id, flag)
+values ('emp-020', 'age_mismatch');
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-020', '신한고수수료글로벌펀드', 'equity', 50, 8, 1.3, 4);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-020', '한국밸류EMP혼합', 'mixed', 20, 6.1, 0.55, 3);
+
+insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)
+values ('emp-020', 'KB국민은행 정기예금', 'deposit', 30, 3.5, 0, 1);
+
+commit;

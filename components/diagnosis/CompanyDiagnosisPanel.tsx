@@ -1,14 +1,16 @@
 import Link from "next/link";
 import type { Route } from "next";
 
-import { companyDiagnosis } from "@/lib/company-diagnosis";
-import { employees } from "@/lib/mock-data";
+import { buildCompanyDiagnosis } from "@/lib/company-diagnosis";
+import type { Employee } from "@/types";
 
 function formatBenchmarkValue(value: number, suffix: string) {
   return `${value.toFixed(1)}${suffix}`;
 }
 
-export function CompanyDiagnosisPanel() {
+export function CompanyDiagnosisPanel({ employees }: { employees: Employee[] }) {
+  const companyDiagnosis = buildCompanyDiagnosis(employees);
+
   return (
     <div className="space-y-6">
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

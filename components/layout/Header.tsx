@@ -1,6 +1,8 @@
-import { companyProfile } from "@/lib/mock-data";
+import { getCompanyProfile } from "@/lib/data";
 
-export function Header() {
+export async function Header() {
+  const companyProfile = await getCompanyProfile();
+
   return (
     <header className="flex flex-col gap-4 border-b border-slate-200/80 bg-white/70 px-8 py-5 backdrop-blur md:flex-row md:items-center md:justify-between">
       <div>

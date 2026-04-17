@@ -3,9 +3,11 @@ import { notFound } from "next/navigation";
 import type { Route } from "next";
 
 import { diagnoseEmployee } from "@/lib/diagnosis-rules";
+import { getEmployeeById } from "@/lib/data";
 import { formatAmount } from "@/lib/format";
-import { employees } from "@/lib/mock-data";
+import { createRebalanceSimulation } from "@/lib/rebalance-simulation";
 import type { PortfolioItem, RiskFlag } from "@/types";
+import { RebalanceSimulationCard } from "@/components/employees/RebalanceSimulationCard";
 
 interface EmployeeDetailPageProps {
   params: {
@@ -76,14 +78,15 @@ function getScoreTone(score: number) {
   return "text-emerald-600";
 }
 
-export default function EmployeeDetailPage({ params }: EmployeeDetailPageProps) {
-  const employee = employees.find((item) => item.id === params.id);
+export default async function EmployeeDetailPage({ params }: EmployeeDetailPageProps) {
+  const employee = await getEmployeeById(params.id);
 
   if (!employee) {
     notFound();
   }
 
   const diagnosis = diagnoseEmployee(employee);
+  const simulation = createRebalanceSimulation(employee);
 
   return (
     <div className="space-y-6">
@@ -283,6 +286,8 @@ export default function EmployeeDetailPage({ params }: EmployeeDetailPageProps) 
           </div>
         </div>
       </section>
+
+      <RebalanceSimulationCard simulation={simulation} />
     </div>
   );
 }

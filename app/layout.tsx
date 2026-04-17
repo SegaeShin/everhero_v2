@@ -6,8 +6,8 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "EverHero MVP",
-  description: "기업 퇴직연금 관리 플랫폼 MVP"
+  title: "EverHero",
+  description: "기업 퇴직연금 관리 플랫폼"
 };
 
 export default function RootLayout({
