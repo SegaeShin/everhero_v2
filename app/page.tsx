@@ -1,10 +1,10 @@
 import { RiskAlertList } from "@/components/dashboard/RiskAlertList";
 import { StatCard } from "@/components/dashboard/StatCard";
-import { getCompanyProfile, getEmployees } from "@/lib/data";
+import { getEmployees } from "@/lib/data";
 import { formatAmount } from "@/lib/format";
 
 export default async function DashboardPage() {
-  const [companyProfile, employees] = await Promise.all([getCompanyProfile(), getEmployees()]);
+  const employees = await getEmployees();
   const totalBalance = employees.reduce((sum, employee) => sum + employee.balance, 0);
   const averageReturn =
     employees.length === 0
@@ -15,8 +15,8 @@ export default async function DashboardPage() {
   const dashboardStats = [
     {
       label: "총 직원",
-      value: `${companyProfile.employeeCount.toLocaleString("ko-KR")}명`,
-      subValue: `관리 대상 ${employees.length}명`,
+      value: `${employees.length.toLocaleString("ko-KR")}명`,
+      subValue: "연동된 직원 데이터 기준",
       trend: "up" as const
     },
     {
