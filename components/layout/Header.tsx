@@ -1,7 +1,7 @@
-import { getCompanyProfile } from "@/lib/data";
+import { getCompanyProfile, getEmployees } from "@/lib/data";
 
 export async function Header() {
-  const companyProfile = await getCompanyProfile();
+  const [companyProfile, employees] = await Promise.all([getCompanyProfile(), getEmployees()]);
 
   return (
     <header className="flex flex-col gap-4 border-b border-slate-200/80 bg-white/70 px-8 py-5 backdrop-blur md:flex-row md:items-center md:justify-between">
@@ -15,7 +15,7 @@ export async function Header() {
           {companyProfile.industry}
         </div>
         <div className="rounded-full border border-slate-200 bg-white px-3 py-1.5">
-          임직원 {companyProfile.employeeCount}명
+          임직원 {employees.length}명
         </div>
         <div className="rounded-full border border-slate-200 bg-white px-3 py-1.5">
           {companyProfile.pensionType}
