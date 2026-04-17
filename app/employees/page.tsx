@@ -11,6 +11,7 @@ interface EmployeesPageProps {
     ageGroup?: string;
     sort?: string;
     quick?: string;
+    actionStatus?: string;
   };
 }
 
@@ -24,6 +25,13 @@ const VALID_QUICK_FILTERS = [
   "risk-asset-over"
 ] as const;
 const VALID_AGE_GROUPS = ["20s", "30s", "40s", "50s+"] as const;
+const VALID_ACTION_STATUSES = [
+  "untouched",
+  "reviewing",
+  "scheduled",
+  "completed",
+  "monitoring"
+] as const;
 
 function isValidRiskFlag(filter: string): filter is RiskFlag {
   return riskFlagOptions.some((option) => option.value === filter);
@@ -39,6 +47,10 @@ function isValidQuickFilter(value: string): value is (typeof VALID_QUICK_FILTERS
 
 function isValidAgeGroup(value: string): value is (typeof VALID_AGE_GROUPS)[number] {
   return VALID_AGE_GROUPS.includes(value as (typeof VALID_AGE_GROUPS)[number]);
+}
+
+function isValidActionStatus(value: string): value is (typeof VALID_ACTION_STATUSES)[number] {
+  return VALID_ACTION_STATUSES.includes(value as (typeof VALID_ACTION_STATUSES)[number]);
 }
 
 function getEmployeeAge(birthYear: number) {
@@ -124,6 +136,10 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
     searchParams?.sort && isValidSortOption(searchParams.sort) ? searchParams.sort : "priority";
   const selectedQuickFilter =
     searchParams?.quick && isValidQuickFilter(searchParams.quick) ? searchParams.quick : "";
+  const selectedActionStatus =
+    searchParams?.actionStatus && isValidActionStatus(searchParams.actionStatus)
+      ? searchParams.actionStatus
+      : "";
 
   const filteredEmployees = [...employees]
     .filter((employee) =>
@@ -149,6 +165,9 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
     )
     .filter((employee) =>
       selectedQuickFilter ? matchesQuickFilter(employee, selectedQuickFilter) : true
+    )
+    .filter((employee) =>
+      selectedActionStatus ? (employee.action?.status ?? "untouched") === selectedActionStatus : true
     )
     .sort((a, b) => {
       if (selectedSort === "low-return") {
@@ -177,6 +196,7 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
       selectedAgeGroup={selectedAgeGroup}
       selectedSort={selectedSort}
       selectedQuickFilter={selectedQuickFilter}
+      selectedActionStatus={selectedActionStatus}
     />
   );
 }

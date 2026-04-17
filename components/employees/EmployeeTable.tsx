@@ -5,8 +5,10 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Route } from "next";
 
+import { employeeActionStatusLabels } from "@/lib/employee-actions";
 import { formatAmount } from "@/lib/format";
 import type { Employee, RiskFlag } from "@/types";
+import { ActionStatusBadge } from "./ActionStatusBadge";
 
 interface FilterOption {
   value: string;
@@ -23,6 +25,7 @@ interface EmployeeTableProps {
   selectedAgeGroup: string;
   selectedSort: string;
   selectedQuickFilter: string;
+  selectedActionStatus: string;
 }
 
 const CURRENT_YEAR = 2026;
@@ -202,7 +205,8 @@ export function EmployeeTable({
   query,
   selectedAgeGroup,
   selectedSort,
-  selectedQuickFilter
+  selectedQuickFilter,
+  selectedActionStatus
 }: EmployeeTableProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -215,6 +219,7 @@ export function EmployeeTable({
     ageGroup?: string;
     sort?: string;
     quick?: string;
+    actionStatus?: string;
   }) => {
     const params = new URLSearchParams(searchParams.toString());
 
@@ -227,6 +232,8 @@ export function EmployeeTable({
     const nextSort = nextValues.sort !== undefined ? nextValues.sort : selectedSort;
     const nextQuick =
       nextValues.quick !== undefined ? nextValues.quick : selectedQuickFilter;
+    const nextActionStatus =
+      nextValues.actionStatus !== undefined ? nextValues.actionStatus : selectedActionStatus;
 
     if (nextDepartment) {
       params.set("department", nextDepartment);
@@ -264,6 +271,12 @@ export function EmployeeTable({
       params.delete("quick");
     }
 
+    if (nextActionStatus) {
+      params.set("actionStatus", nextActionStatus);
+    } else {
+      params.delete("actionStatus");
+    }
+
     const queryString = params.toString();
     const href = queryString ? `${pathname}?${queryString}` : pathname;
 
@@ -293,6 +306,11 @@ export function EmployeeTable({
     { value: "low-return", label: "수익률 낮은 순" },
     { value: "high-balance", label: "적립금 높은 순" },
     { value: "name", label: "이름순" }
+  ];
+
+  const actionStatusOptions: FilterOption[] = [
+    { value: "", label: "전체 조치 상태" },
+    ...Object.entries(employeeActionStatusLabels).map(([value, label]) => ({ value, label }))
   ];
 
   const attentionCount = employees.filter((employee) => needsAttention(employee)).length;
@@ -340,6 +358,12 @@ export function EmployeeTable({
               value={selectedSort}
               options={sortOptions}
               onChange={(sort) => updateFilters({ sort })}
+            />
+            <FilterSelect
+              label="Action Status"
+              value={selectedActionStatus}
+              options={actionStatusOptions}
+              onChange={(actionStatus) => updateFilters({ actionStatus })}
             />
           </div>
         </div>
@@ -405,6 +429,7 @@ export function EmployeeTable({
               <th className="px-5 py-3 font-medium">관리 우선도</th>
               <th className="px-5 py-3 font-medium">적립금</th>
               <th className="px-5 py-3 font-medium">수익률</th>
+              <th className="px-5 py-3 font-medium">조치 상태</th>
               <th className="px-5 py-3 font-medium">플래그</th>
               <th className="px-5 py-3 text-right font-medium">액션</th>
             </tr>
@@ -449,6 +474,16 @@ export function EmployeeTable({
                     </span>
                   </td>
                   <td className="px-5 py-4">
+                    <div className="space-y-2">
+                      <ActionStatusBadge action={employee.action} />
+                      <p className="text-xs text-slate-500">
+                        {employee.action?.ownerName
+                          ? `담당 ${employee.action.ownerName}`
+                          : "아직 담당자 미지정"}
+                      </p>
+                    </div>
+                  </td>
+                  <td className="px-5 py-4">
                     <div className="flex flex-wrap gap-2">
                       {employee.riskFlags.length === 0 ? (
                         <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-200">
@@ -488,7 +523,7 @@ export function EmployeeTable({
               ))
             ) : (
               <tr>
-                <td colSpan={7} className="px-5 py-12 text-center">
+                <td colSpan={8} className="px-5 py-12 text-center">
                   <p className="font-medium text-slate-700">조건에 맞는 직원이 없습니다.</p>
                   <p className="mt-2 text-sm text-slate-500">
                     검색어나 빠른 필터, 부서/연령대 조건을 조정해 다시 확인해 주세요.

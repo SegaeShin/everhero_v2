@@ -53,14 +53,29 @@ create table if not exists employee_portfolios (
   created_at timestamptz not null default now()
 );
 
+create table if not exists employee_actions (
+  id uuid primary key default gen_random_uuid(),
+  employee_id text not null unique references employees(id) on delete cascade,
+  status text not null check (
+    status in ('untouched', 'reviewing', 'scheduled', 'completed', 'monitoring')
+  ) default 'untouched',
+  note text not null default '',
+  owner_name text not null default '',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create index if not exists employees_department_idx on employees(department);
 create index if not exists employee_risk_flags_employee_id_idx on employee_risk_flags(employee_id);
 create index if not exists employee_portfolios_employee_id_idx on employee_portfolios(employee_id);
+create index if not exists employee_actions_status_idx on employee_actions(status);
+create index if not exists employee_actions_updated_at_idx on employee_actions(updated_at desc);
 
 alter table company_profiles enable row level security;
 alter table employees enable row level security;
 alter table employee_risk_flags enable row level security;
 alter table employee_portfolios enable row level security;
+alter table employee_actions enable row level security;
 
 drop policy if exists "Public read company_profiles" on company_profiles;
 create policy "Public read company_profiles"
@@ -89,3 +104,25 @@ on employee_portfolios
 for select
 to anon, authenticated
 using (true);
+
+drop policy if exists "Public read employee_actions" on employee_actions;
+create policy "Public read employee_actions"
+on employee_actions
+for select
+to anon, authenticated
+using (true);
+
+drop policy if exists "Public insert employee_actions" on employee_actions;
+create policy "Public insert employee_actions"
+on employee_actions
+for insert
+to anon, authenticated
+with check (true);
+
+drop policy if exists "Public update employee_actions" on employee_actions;
+create policy "Public update employee_actions"
+on employee_actions
+for update
+to anon, authenticated
+using (true)
+with check (true);

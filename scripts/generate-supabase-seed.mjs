@@ -68,6 +68,7 @@ const lines = [
   "",
   "begin;",
   "",
+  "truncate table employee_actions cascade;",
   "truncate table employee_portfolios restart identity cascade;",
   "truncate table employee_risk_flags restart identity cascade;",
   "truncate table employees restart identity cascade;",

@@ -13,6 +13,23 @@ export type RiskFlag =
   | "no_diversification"
   | "age_mismatch";
 
+export type EmployeeActionStatus =
+  | "untouched"
+  | "reviewing"
+  | "scheduled"
+  | "completed"
+  | "monitoring";
+
+export interface EmployeeAction {
+  id: string;
+  employeeId: string;
+  status: EmployeeActionStatus;
+  note: string;
+  ownerName: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface PortfolioItem {
   productName: string;
   category: ProductCategory;
@@ -33,6 +50,7 @@ export interface Employee {
   portfolio: PortfolioItem[];
   returnRate: number;
   riskFlags: RiskFlag[];
+  action?: EmployeeAction | null;
 }
 
 export interface CompanyProfile {

@@ -1,4 +1,12 @@
-import type { CompanyProfile, Employee, PortfolioItem, ProductCategory, RiskFlag } from "@/types";
+import type {
+  CompanyProfile,
+  Employee,
+  EmployeeAction,
+  EmployeeActionStatus,
+  PortfolioItem,
+  ProductCategory,
+  RiskFlag
+} from "@/types";
 
 import {
   companyProfile as fallbackCompanyProfile,
@@ -30,6 +38,7 @@ interface SupabaseEmployeeRow {
   return_rate: number;
   employee_risk_flags?: SupabaseRiskFlagRow[] | null;
   employee_portfolios?: SupabasePortfolioRow[] | null;
+  employee_actions?: SupabaseEmployeeActionRow[] | null;
 }
 
 interface SupabaseCompanyProfileRow {
@@ -38,6 +47,23 @@ interface SupabaseCompanyProfileRow {
   employee_count: number;
   pension_type: string;
   provider: string;
+}
+
+interface SupabaseEmployeeActionRow {
+  id: string;
+  employee_id: string;
+  status: EmployeeActionStatus;
+  note: string | null;
+  owner_name: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+interface EmployeeActionInput {
+  employeeId: string;
+  status: EmployeeActionStatus;
+  note: string;
+  ownerName: string;
 }
 
 function mapPortfolio(rows: SupabasePortfolioRow[] | null | undefined): PortfolioItem[] {
@@ -53,6 +79,22 @@ function mapPortfolio(rows: SupabasePortfolioRow[] | null | undefined): Portfoli
     .sort((a, b) => b.allocation - a.allocation);
 }
 
+function mapEmployeeAction(row?: SupabaseEmployeeActionRow | null): EmployeeAction | null {
+  if (!row) {
+    return null;
+  }
+
+  return {
+    id: row.id,
+    employeeId: row.employee_id,
+    status: row.status,
+    note: row.note ?? "",
+    ownerName: row.owner_name ?? "",
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  };
+}
+
 function mapEmployee(row: SupabaseEmployeeRow): Employee {
   return {
     id: row.id,
@@ -64,7 +106,8 @@ function mapEmployee(row: SupabaseEmployeeRow): Employee {
     monthlyContribution: Number(row.monthly_contribution),
     returnRate: Number(row.return_rate),
     riskFlags: (row.employee_risk_flags ?? []).map((item) => item.flag),
-    portfolio: mapPortfolio(row.employee_portfolios)
+    portfolio: mapPortfolio(row.employee_portfolios),
+    action: mapEmployeeAction(row.employee_actions?.[0] ?? null)
   };
 }
 
@@ -77,6 +120,41 @@ function mapCompanyProfile(row: SupabaseCompanyProfileRow): CompanyProfile {
     provider: row.provider
   };
 }
+
+const employeeBaseSelect = `
+  id,
+  name,
+  department,
+  join_date,
+  birth_year,
+  balance,
+  monthly_contribution,
+  return_rate,
+  employee_risk_flags (
+    flag
+  ),
+  employee_portfolios (
+    product_name,
+    category,
+    allocation,
+    return_rate,
+    fee_rate,
+    risk_level
+  )
+`;
+
+const employeeSelectWithActions = `
+  ${employeeBaseSelect},
+  employee_actions (
+    id,
+    employee_id,
+    status,
+    note,
+    owner_name,
+    created_at,
+    updated_at
+  )
+`;
 
 export async function getCompanyProfile(): Promise<CompanyProfile> {
   if (!hasSupabaseConfig()) {
@@ -119,31 +197,18 @@ export async function getEmployees(): Promise<Employee[]> {
       return fallbackEmployees;
     }
 
+    const responseWithActions = await supabase
+      .from("employees")
+      .select(employeeSelectWithActions)
+      .order("name", { ascending: true });
+
+    if (!responseWithActions.error && responseWithActions.data && responseWithActions.data.length > 0) {
+      return (responseWithActions.data as SupabaseEmployeeRow[]).map(mapEmployee);
+    }
+
     const { data, error } = await supabase
       .from("employees")
-      .select(
-        `
-          id,
-          name,
-          department,
-          join_date,
-          birth_year,
-          balance,
-          monthly_contribution,
-          return_rate,
-          employee_risk_flags (
-            flag
-          ),
-          employee_portfolios (
-            product_name,
-            category,
-            allocation,
-            return_rate,
-            fee_rate,
-            risk_level
-          )
-        `
-      )
+      .select(employeeBaseSelect)
       .order("name", { ascending: true });
 
     if (error || !data || data.length === 0) {
@@ -160,4 +225,39 @@ export async function getEmployeeById(employeeId: string): Promise<Employee | nu
   const employees = await getEmployees();
 
   return employees.find((employee) => employee.id === employeeId) ?? null;
+}
+
+export async function upsertEmployeeAction(input: EmployeeActionInput): Promise<EmployeeAction> {
+  if (!hasSupabaseConfig()) {
+    throw new Error("Supabase 환경변수가 설정되지 않았습니다.");
+  }
+
+  const supabase = getSupabaseServerClient();
+
+  if (!supabase) {
+    throw new Error("Supabase 클라이언트를 생성하지 못했습니다.");
+  }
+
+  const { data, error } = await supabase
+    .from("employee_actions")
+    .upsert(
+      {
+        employee_id: input.employeeId,
+        status: input.status,
+        note: input.note,
+        owner_name: input.ownerName,
+        updated_at: new Date().toISOString()
+      },
+      {
+        onConflict: "employee_id"
+      }
+    )
+    .select("id, employee_id, status, note, owner_name, created_at, updated_at")
+    .single();
+
+  if (error || !data) {
+    throw new Error("조치 상태 저장에 실패했습니다. Supabase 스키마를 먼저 반영해 주세요.");
+  }
+
+  return mapEmployeeAction(data as SupabaseEmployeeActionRow) as EmployeeAction;
 }

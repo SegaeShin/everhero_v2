@@ -2,8 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Route } from "next";
 
+import { EmployeeActionPanel } from "@/components/employees/EmployeeActionPanel";
 import { diagnoseEmployee } from "@/lib/diagnosis-rules";
 import { getEmployeeById } from "@/lib/data";
+import { hasSupabaseConfig } from "@/lib/supabase";
 import { formatAmount } from "@/lib/format";
 import { createRebalanceSimulation } from "@/lib/rebalance-simulation";
 import type { PortfolioItem, RiskFlag } from "@/types";
@@ -87,6 +89,7 @@ export default async function EmployeeDetailPage({ params }: EmployeeDetailPageP
 
   const diagnosis = diagnoseEmployee(employee);
   const simulation = createRebalanceSimulation(employee);
+  const isSupabaseEnabled = hasSupabaseConfig();
 
   return (
     <div className="space-y-6">
@@ -286,6 +289,12 @@ export default async function EmployeeDetailPage({ params }: EmployeeDetailPageP
           </div>
         </div>
       </section>
+
+      <EmployeeActionPanel
+        employeeId={employee.id}
+        initialAction={employee.action}
+        isSupabaseEnabled={isSupabaseEnabled}
+      />
 
       <RebalanceSimulationCard simulation={simulation} />
     </div>
