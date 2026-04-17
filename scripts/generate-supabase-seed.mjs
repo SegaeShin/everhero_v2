@@ -78,29 +78,45 @@ const lines = [
   ""
 ];
 
-employees.forEach((employee) => {
+const employeeRows = employees.map(
+  (employee) =>
+    `  (${sqlString(employee.id)}, ${sqlString(employee.name)}, ${sqlString(employee.department)}, ${sqlString(employee.joinDate)}, ${sqlNumber(employee.birthYear)}, ${sqlNumber(employee.balance)}, ${sqlNumber(employee.monthlyContribution)}, ${sqlNumber(employee.returnRate)})`
+);
+
+lines.push(
+  "insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)",
+  `values\n${employeeRows.join(",\n")};`,
+  ""
+);
+
+const riskFlagRows = employees.flatMap((employee) =>
+  employee.riskFlags.map(
+    (flag) => `  (${sqlString(employee.id)}, ${sqlString(flag)})`
+  )
+);
+
+if (riskFlagRows.length > 0) {
   lines.push(
-    "insert into employees (id, name, department, join_date, birth_year, balance, monthly_contribution, return_rate)",
-    `values (${sqlString(employee.id)}, ${sqlString(employee.name)}, ${sqlString(employee.department)}, ${sqlString(employee.joinDate)}, ${sqlNumber(employee.birthYear)}, ${sqlNumber(employee.balance)}, ${sqlNumber(employee.monthlyContribution)}, ${sqlNumber(employee.returnRate)});`,
+    "insert into employee_risk_flags (employee_id, flag)",
+    `values\n${riskFlagRows.join(",\n")};`,
     ""
   );
+}
 
-  employee.riskFlags.forEach((flag) => {
-    lines.push(
-      "insert into employee_risk_flags (employee_id, flag)",
-      `values (${sqlString(employee.id)}, ${sqlString(flag)});`,
-      ""
-    );
-  });
+const portfolioRows = employees.flatMap((employee) =>
+  employee.portfolio.map(
+    (item) =>
+      `  (${sqlString(employee.id)}, ${sqlString(item.productName)}, ${sqlString(item.category)}, ${sqlNumber(item.allocation)}, ${sqlNumber(item.returnRate)}, ${sqlNumber(item.feeRate)}, ${sqlNumber(item.riskLevel)})`
+  )
+);
 
-  employee.portfolio.forEach((item) => {
-    lines.push(
-      "insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)",
-      `values (${sqlString(employee.id)}, ${sqlString(item.productName)}, ${sqlString(item.category)}, ${sqlNumber(item.allocation)}, ${sqlNumber(item.returnRate)}, ${sqlNumber(item.feeRate)}, ${sqlNumber(item.riskLevel)});`,
-      ""
-    );
-  });
-});
+if (portfolioRows.length > 0) {
+  lines.push(
+    "insert into employee_portfolios (employee_id, product_name, category, allocation, return_rate, fee_rate, risk_level)",
+    `values\n${portfolioRows.join(",\n")};`,
+    ""
+  );
+}
 
 lines.push("commit;", "");
 
