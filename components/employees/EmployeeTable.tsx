@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Route } from "next";
 
@@ -117,14 +118,43 @@ function SearchInput({
   value: string;
   onChange: (value: string) => void;
 }) {
+  const [draftValue, setDraftValue] = useState(value);
+  const isComposingRef = useRef(false);
+
+  useEffect(() => {
+    setDraftValue(value);
+  }, [value]);
+
+  useEffect(() => {
+    if (draftValue === value || isComposingRef.current) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      onChange(draftValue);
+    }, 200);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [draftValue, onChange, value]);
+
   return (
     <label className="flex min-w-[220px] flex-1 flex-col gap-2">
       <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
         Search
       </span>
       <input
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
+        value={draftValue}
+        onChange={(event) => setDraftValue(event.target.value)}
+        onCompositionStart={() => {
+          isComposingRef.current = true;
+        }}
+        onCompositionEnd={(event) => {
+          isComposingRef.current = false;
+          const nextValue = event.currentTarget.value;
+
+          setDraftValue(nextValue);
+          onChange(nextValue);
+        }}
         placeholder="직원명 또는 부서 검색"
         className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-everhero-red focus:ring-2 focus:ring-red-100"
       />
